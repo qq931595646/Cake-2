@@ -8,7 +8,8 @@
         <span class="input_sp" v-if="!item.selected" @click="radios(index)"></span>
       </label>
 
-      <img class="img" src="../../public/images/曲奇.png" alt />
+      <img class="img" src="images/1.jpg" alt />
+      
       <div>
         <span class="title_sp">
           <span>{{item.title}}</span>
@@ -43,13 +44,15 @@
         </span>
       </div>
       <div class="bottom_right">
-        <label class="delete">删除</label>
+        <label class="delete" >删除</label>
         <label class="close">结算</label>
       </div>
     </div>
   </div>
 </template>
+<script src="../../public/js/jquery-1.11.3.js"></script>
 <script>
+import {jquery} from '../../public/js/jquery-1.11.3' 
 export default {
   data() {
     return {
@@ -190,6 +193,7 @@ export default {
 <style>
 .cart {
   /* display: flex; */
+  position: relative;
   width: 100%;
   height: 600px;
   /* justify-content: space-between; */
@@ -239,9 +243,9 @@ export default {
   color: #adadad;
   margin-top: 10px;
 }
-.state_s{
+.state_s {
   display: inline-block;
-  margin-right:10px;
+  margin-right: 10px;
 }
 .sprice {
   display: block;
@@ -281,7 +285,7 @@ export default {
 .bottom {
   position: fixed;
   justify-content: space-between;
-  bottom: 100px;
+  bottom: 50px;
   width: 100%;
   background: #fff;
   height: 50px;
@@ -293,7 +297,7 @@ export default {
   height: 20px;
   border: 1px solid #7b7b7b;
   border-radius: 50%;
-  margin: 0px 5px 0 8px;
+  margin: 0px 5px 0px 8px;
 }
 #bottom_input:checked + .bottom_input {
   background: #f00;
@@ -321,7 +325,7 @@ export default {
 .count {
   display: inline-block;
   position: relative;
-  top: 7px;
+  top: 3px;
   margin-left: 10px;
   width: 100px;
   height: 40px;
@@ -329,7 +333,7 @@ export default {
 .bottom_right {
   display: inline-block;
   position: relative;
-  top: -4px;
+  bottom: 4px;
   right: -44px;
   line-height: 50px;
 }
