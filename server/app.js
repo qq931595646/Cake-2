@@ -13,6 +13,8 @@ const indexRouter = require("./routes/index");
 const loginRouter = require("./routes/user");
 // 导入details路由器 商品
 const detailsRouter = require("./routes/details");
+// 导入cart路由器 购物车
+const cartRouter = require("./routes/cart");
 
 // 创建服务器
 var server = express();
@@ -50,3 +52,5 @@ server.use("/index", indexRouter);
 server.use("/user", loginRouter);
 
 server.use("/product", detailsRouter);
+
+server.use("/cart", cartRouter);

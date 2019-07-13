@@ -66,7 +66,7 @@ router.post("/login", (req, res) => {
       // session 的登陆id
       req.session.uid = result[0].uid;
       console.log(req.session.uid)
-      res.send({ code: 200, msg: result[0] });
+      res.send({ code: 200, data: result });
     } else {
       res.send({ code: 400, msg: "用户名或密码错误" });
     }

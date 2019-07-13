@@ -48,7 +48,7 @@ export default {
     // 请求数据
     this.axios.get("product/classify").then(result => {
       // console.log(result.data.msg);
-      var msg = result.data.msg;
+      var msg = result.data.data;
       // 请求回来的数据格式不是我想要的数据格式要转成:
       // left_list: {蛋糕:[{name:"蛋糕",pic:"images/1.jspg"},...],...,...,}
       var obj_list = {};

@@ -12,19 +12,21 @@
 
       <div>
         <span class="title_sp">
-          <span>{{item.title}}</span>
-          <span>({{item.weight}})</span>
+          <span v-text="item.pname"></span>
         </span>
         <span class="state">
-          <span class="state_s">状态: {{item.state}}</span>
-          <span>尺寸: {{item.size}}</span>
+          <span :class="{none:item.is_state=='-1'}" v-text="`状态: ${item.is_state}`"></span>
+          <span :class="{none:item.size==null}" v-text="`尺寸: ${item.size}`"></span>
+          <span :class="{none:item.fruit==null}" v-text="`水果: ${item.fruit}`"></span>
+          <span :class="{none:item.else_message==null}" v-text="`套餐: ${item.else_message}`"></span>
+          <span :class="{none:item.style==null}" v-text="`款式: ${item.style}`"></span>
         </span>
-        <span class="sprice">¥{{item.money}}</span>
+        <span class="sprice" v-text="`¥${item.price*item.count}`"></span>
       </div>
       <div>
         <span class="btn">
           <span class="sbtn" @click="btn_minute(index)">-</span>
-          <span class="btn_value" v-text="item.num"></span>
+          <span class="btn_value" v-text="item.count"></span>
           <span class="sbtn" @click="btn_add(index)">+</span>
         </span>
       </div>
@@ -54,44 +56,29 @@
 export default {
   data() {
     return {
-      money: 0,
+      money: 100,
       num: 0,
-      list: [
-        {
-          title: "蔓越莓软曲奇",
-          weight: "300g",
-          size: "8寸",
-          state: "预定",
-          money: 68,
-          num: 1,
-          selected: false
-        },
-        {
-          title: "蔓越莓软曲奇",
-          weight: "300g",
-          size: "8寸",
-          state: "预定",
-          money: 68,
-          num: 1,
-          selected: false
-        },
-        {
-          title: "蔓越莓软曲奇",
-          weight: "300g",
-          size: "8寸",
-          state: "预定",
-          money: 68,
-          num: 1,
-          selected: false
-        }
+      list: [{
+        count:1000
+      }
+        
       ],
       // 全选
       isSelectAll: false
     };
   },
   created() {
+    this.axios
+      .get("/cart/get_cart", { params: { user_id: 2 } })
+      .then(result => {
+        console.log(result.data.data)
+        for(var i of result.data.data){
+          i.selected=false
+        }
+        this.list=result.data.data
+      });
     // 需要公共的头部和尾部
-    this.$emit("show_footer", false);
+    // this.$emit("show_footer", false);
   },
   methods: {
     selectAll(e) {
@@ -104,10 +91,9 @@ export default {
     },
     Selected(e) {
       // console.log(e.target);
-      console.log(this.list);
       for (var item of this.list) {
         // console.log(item)
-        console.log(item.selected);
+        // console.log(item.selected);
         if (item.selected != true) {
           this.isSelectAll = false;
           return;
@@ -116,21 +102,27 @@ export default {
         }
       }
     },
+    //总价和数量更改
     hh: function() {
+      //数量*单价的价格
       var price = 0;
+      //勾选数量
       var numb = 0;
       var list = this.list;
       for (var i = 0; i < list.length; i++) {
         if (list[i].selected) {
-          price += list[i].num * list[i].money;
-          numb += list[i].num;
+          price += list[i].count * list[i].price;
+          numb += list[i].count;
         }
       }
+      // 总价
       this.money = price;
+      //勾选数量
       this.num = numb;
       // console.log(numb);
     },
-    radios: function(index) {
+    radios(index) {
+      //循环的商品
       var list = this.list;
       list[index].selected = !list[index].selected;
       this.hh();
@@ -139,36 +131,22 @@ export default {
     //添加
     btn_add: function(index) {
       var list = this.list;
-      var num = list[index].num;
-      num = num + 1;
-      list[index].num = num;
+      var count = list[index].count;
+      count = count + 1;
+      list[index].count = count;
       this.hh();
     },
     //减去
-    btn_minute: function(index) {
+    btn_minute(index) {
       var list = this.list;
-      var num = list[index].num;
-      if (num > 1) {
-        num = num - 1;
-        list[index].num = num;
+      var count = list[index].count;
+      if (count > 1) {
+        count = count - 1;
+        list[index].count = count;
       }
       this.hh();
     },
-    function() {
-      var price = 0;
-      var numb = 0;
-      var list = this.list;
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].selected) {
-          price += list[i].num * list[i].money;
-          numb += list[i].num;
-        }
-      }
-      this.money = price;
-      this.num = numb;
-      // console.log(numb);
-      // console.log(price);
-    }
+   
     // selectAll(e) {
     //   //全选按钮状态
     //   var cb = e.target.checked;
@@ -192,6 +170,9 @@ export default {
 };
 </script>
 <style>
+.none {
+  display: none;
+}
 .cart {
   /* display: flex; */
   position: relative;
@@ -242,20 +223,21 @@ export default {
   color: #adadad;
   margin-top: 10px;
 }
-.state_s {
-  display: inline-block;
-  margin-right: 10px;
+.state span{
+  margin-right:5px;
 }
 .sprice {
   display: block;
   font-size: 16px;
   color: #ff6464;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .btn {
   display: block;
-  margin-left: -50px;
-  margin-top: 70px;
+  width:130px;
+  position: relative;
+  right:0px;
+  top:60px;
 }
 .sbtn {
   display: inline-block;
