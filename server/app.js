@@ -11,6 +11,8 @@ const session = require("express-session");
 const indexRouter = require("./routes/index");
 // 导入login路由器  登陆 注册
 const loginRouter = require("./routes/user");
+// 导入details路由器 商品
+const detailsRouter = require("./routes/details");
 
 // 创建服务器
 var server = express();
@@ -20,8 +22,10 @@ server.listen(7700);
 
 // 使用cors中间件 解决跨域
 server.use(cors({
-  origin: ["http://localhost:7000", "http://127.0.0.1:5500", "http://127.0.0.1:7000"]
+  origin: ["http://localhost:7000", "http://127.0.0.1:5500", "http://127.0.0.1:7000"],
+  credentials :true
 }));
+
 
 // session
 server.use(session({
@@ -44,3 +48,5 @@ server.use(express.static('public'));
 server.use("/index", indexRouter);
 
 server.use("/user", loginRouter);
+
+server.use("/product", detailsRouter);

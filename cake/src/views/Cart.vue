@@ -1,15 +1,15 @@
 <template>
   <div class="cart">
-    <div class="cart_box" v-for="(item,index) in list" :key="index">
+    <div class="cart_box" v-for="(item,index) of list" :key="index">
       <!-- <h1 class="title">购物车</h1> -->
-      <label for="input" @click="selected">
+      <label for="input" @click="Selected">
         <input type="checkbox" class="input" v-model="item.selected" />
         <span class="input_sp input_red" v-if="item.selected" @click="radios(index)"></span>
         <span class="input_sp" v-if="!item.selected" @click="radios(index)"></span>
       </label>
 
       <img class="img" src="images/1.jpg" alt />
-      
+
       <div>
         <span class="title_sp">
           <span>{{item.title}}</span>
@@ -31,7 +31,7 @@
     </div>
     <div class="bottom">
       <label for="bottom_input" @change="selectAll">
-        <input type="checkbox" id="bottom_input" />
+        <input type="checkbox" v-model="isSelectAll" id="bottom_input" />
         <span class="bottom_input"></span>
         <span class="all">全选</span>
       </label>
@@ -44,15 +44,13 @@
         </span>
       </div>
       <div class="bottom_right">
-        <label class="delete" >删除</label>
+        <label class="delete">删除</label>
         <label class="close">结算</label>
       </div>
     </div>
   </div>
 </template>
-<script src="../../public/js/jquery-1.11.3.js"></script>
 <script>
-import {jquery} from '../../public/js/jquery-1.11.3' 
 export default {
   data() {
     return {
@@ -86,7 +84,9 @@ export default {
           num: 1,
           selected: false
         }
-      ]
+      ],
+      // 全选
+      isSelectAll: false
     };
   },
   created() {
@@ -102,8 +102,11 @@ export default {
         item.selected = cb;
       }
     },
-    selected() {
+    Selected(e) {
+      // console.log(e.target);
+      console.log(this.list);
       for (var item of this.list) {
+        // console.log(item)
         console.log(item.selected);
         if (item.selected != true) {
           this.isSelectAll = false;
@@ -130,9 +133,7 @@ export default {
     radios: function(index) {
       var list = this.list;
       list[index].selected = !list[index].selected;
-
       this.hh();
-
       // console.log(list[index].selected);
     },
     //添加
@@ -212,7 +213,6 @@ export default {
 #bottom_input {
   display: none;
 }
-
 .input_sp {
   display: block;
   width: 20px;
@@ -224,7 +224,6 @@ export default {
 .input_red {
   background: #f00;
 }
-
 .img {
   width: 100px;
   margin-top: 10px;
@@ -268,7 +267,6 @@ export default {
   color: #a3a3a3;
   font-size: 18px;
 }
-
 .btn_value {
   display: inline-block;
   text-align: center;
@@ -280,7 +278,6 @@ export default {
   color: #868686;
   margin: 0 2px 0 2px;
 }
-
 /* 底部样式 */
 .bottom {
   position: fixed;
@@ -356,4 +353,3 @@ export default {
   font-size: 13px;
 }
 </style>
-

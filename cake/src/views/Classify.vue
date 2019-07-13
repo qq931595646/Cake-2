@@ -22,8 +22,10 @@
       <cube-scroll ref="scroll">
         <ul>
           <li v-for="(elem,i) in right_list" :key="i">
-            <img :src="elem.pic" />
-            <span v-text="elem.name"></span>
+            <a href v-if="elem.series!='NULL'">
+              <img src="images/1.png" />
+              <span v-text="elem.series"></span>
+            </a>
           </li>
         </ul>
       </cube-scroll>
@@ -37,28 +39,45 @@ export default {
       value: "",
       // 默认数据(搜索的关键字)
       defaultResult: ["蛋糕", "123", "1", "124567"],
-      left_list: {
-        蛋糕: [{ name: "蛋糕", pic: "images/1.jspg" }],
-        小食: [{ name: "小食", pic: "images/1.jspg" }],
-        甜点: [{ name: "甜点", pic: "images/1.jspg" }],
-        礼盒: [{ name: "礼盒", pic: "images/1.jspg" }],
-        生日配件: [{ name: "生日配件", pic: "images/1.jspg" }],
-        积分换购: [{ name: "积分换购", pic: "images/1.jspg" }],
-        甜点台布置: [{ name: "甜点台布置", pic: "images/1.jspg" }],
-        周末半价日: [{ name: "周末半价日", pic: "images/1.jspg" }]
-      },
+      left_list: {},
       right_list: [],
-      selectedLabel: "蛋糕"
+      selectedLabel: ""
     };
   },
   created() {
-    // 加载第一个区域
-    this.right_list = this.left_list[this.selectedLabel];
+    // 请求数据
+    this.axios.get("product/classify").then(result => {
+      // console.log(result.data.msg);
+      var msg = result.data.msg;
+      // 请求回来的数据格式不是我想要的数据格式要转成:
+      // left_list: {蛋糕:[{name:"蛋糕",pic:"images/1.jspg"},...],...,...,}
+      var obj_list = {};
+      var obj_name = [];
+      for (var i = 0; i < msg.length; i++) {
+        // 如果这个对象名里没有东西就强行赋值为一个空数组
+        if (obj_list[msg[i].cname] == undefined) {
+          obj_list[msg[i].cname] = [];
+        }
+        // 拿到对象的属性名
+        obj_name = Object.keys(obj_list);
+        // 如果对象的属性名和数据里的分类名称一样就放进该对象里的数组里
+        for (var name of obj_name) {
+          if (name == msg[i].cname) {
+            obj_list[name].push(msg[i]);
+          }
+        }
+      }
+      this.left_list = obj_list;
+      // 加载第一个区域
+      this.selectedLabel = Object.keys(this.left_list)[0];
+      this.right_list = this.left_list[this.selectedLabel];
+    });
   },
   methods: {
     changeHandler(label) {
       // 点击左边后换到别的区域
       this.right_list = this.left_list[label];
+      // console.log(this.right_list);
     }
   },
   computed: {
@@ -104,7 +123,7 @@ export default {
   left: 0;
   bottom: 0;
   width: 100px;
-  background-color: #f7f7f7;
+  background-color: #f9f9f9;
 }
 
 .cube-scroll-list-wrapper {
@@ -120,6 +139,7 @@ export default {
       color: #555;
 
       &.cube-tab_active {
+        background-color: #fff;
         color: #fe9170;
 
         &::after {
@@ -138,23 +158,29 @@ export default {
   left: 100px;
   right: 0;
   bottom: 0;
-  background-color: #fff;
+  background-color: #f9f9f9;
 
   ul {
-    display: flex;
-    /* 每个项目的间隔相等 */
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin: 20px 10px 0 10px;
+    position: fixed;
+    background-color: #fff;
+    top: 0;
+    left: 0;
   }
 
   li {
+    float: left;
+    margin-left: 19px;
     height: 100px;
     align-items: center;
     text-align: center;
     background-color: #fff;
-    width: 28%;
+    width: 24%;
     margin-bottom: 30px;
+    // 单行文本超出部分隐藏
+    white-space: nowrap;
+    // text-overflow: ellipsis;
+    // overflow: hidden;
+    word-break: break-all;
 
     img {
       display: block;
@@ -162,7 +188,7 @@ export default {
     }
 
     span {
-      font-size: 16px;
+      font-size: 12px;
       color: #555;
     }
   }

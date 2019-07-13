@@ -26,6 +26,7 @@ axios.defaults.withCredentials = true
 // 配置axios基础路径
 axios.defaults.baseURL = "http://127.0.0.1:7700/"
 
+
 Vue.config.productionTip = false
 
 new Vue({
