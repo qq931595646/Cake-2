@@ -46,24 +46,24 @@ export default {
   },
   created() {
     // 请求数据
-    this.axios.get("product/classify").then(result => {
+    this.axios.get("/product/classify").then(result => {
       // console.log(result.data.msg);
-      var msg = result.data.data;
+      var data = result.data.data;
       // 请求回来的数据格式不是我想要的数据格式要转成:
       // left_list: {蛋糕:[{name:"蛋糕",pic:"images/1.jspg"},...],...,...,}
       var obj_list = {};
       var obj_name = [];
-      for (var i = 0; i < msg.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         // 如果这个对象名里没有东西就强行赋值为一个空数组
-        if (obj_list[msg[i].cname] == undefined) {
-          obj_list[msg[i].cname] = [];
+        if (obj_list[data[i].cname] == undefined) {
+          obj_list[data[i].cname] = [];
         }
         // 拿到对象的属性名
         obj_name = Object.keys(obj_list);
         // 如果对象的属性名和数据里的分类名称一样就放进该对象里的数组里
         for (var name of obj_name) {
-          if (name == msg[i].cname) {
-            obj_list[name].push(msg[i]);
+          if (name == data[i].cname) {
+            obj_list[name].push(data[i]);
           }
         }
       }

@@ -5,6 +5,7 @@ const pool = require("../pool");
 // 创建路由器
 var router = express.Router();
 
+// 需要一个参数,某个系列的id
 router.get("/index", (req, res) => {
   // 哪个系列下的所有商品
   var cid = req.query.cid;
@@ -12,6 +13,12 @@ router.get("/index", (req, res) => {
     carousel: [],
     product: []
   };
+
+  if (!cid) {
+    res.send({ code: 400, msg: "没有该系列的商品" });
+    return;
+  }
+
   // 获取首页轮播图片
   var sql = "SELECT img,title,pid FROM cake_index_carousel";
   pool.query(sql, (err, result) => {
@@ -23,8 +30,12 @@ router.get("/index", (req, res) => {
                 cake_catalogue.cid=? AND cake_product.cid=?`;
     pool.query(sql2, [cid, cid], (err, result) => {
       if (err) throw err;
-      output.product = result;
-      res.send({ code: 200, data: output });
+      if (result.length > 0) {
+        output.product = result;
+        res.send({ code: 200, data: output });
+      } else {
+        res.send({ code: 400, msg: "没有该系列的商品" })
+      }
     })
   })
 });

@@ -6,13 +6,12 @@ import Classify from './views/Classify'
 import Cart from './views/Cart'
 import Own from './views/Own'
 import Login from './views/Login'
-import Test from './views/test'
+import Close from './views/Close.vue'
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/',
       redirect: '/Index'
     },
@@ -42,8 +41,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/test',
-      component: Test
-    }
+      path: '/Close',
+      component: Close
+    },
+    
   ]
 })

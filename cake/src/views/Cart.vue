@@ -1,7 +1,8 @@
 <template>
   <div class="cart">
+    <h1 class="title">购物车</h1>
     <div class="cart_box" v-for="(item,index) of list" :key="index">
-      <!-- <h1 class="title">购物车</h1> -->
+      
       <label for="input" @click="Selected">
         <input type="checkbox" class="input" v-model="item.selected" />
         <span class="input_sp input_red" v-if="item.selected" @click="radios(index)"></span>
@@ -56,27 +57,30 @@
 export default {
   data() {
     return {
-      money: 100,
+      money: 0,
       num: 0,
-      list: [{
-        count:1000
-      }
-        
-      ],
+      list: [],
       // 全选
       isSelectAll: false
     };
   },
   created() {
-    this.axios
-      .get("/cart/get_cart", { params: { user_id: 2 } })
-      .then(result => {
-        console.log(result.data.data)
-        for(var i of result.data.data){
-          i.selected=false
-        }
-        this.list=result.data.data
-      });
+    // 加了判断,是否为登陆状态
+    var uid = sessionStorage.getItem("uid");
+    uid = 1;
+    if (uid != undefined) {
+      this.axios
+        .get("/cart/get_cart", { params: { user_id: 1 } })
+        .then(result => {
+          // console.log(result.data);
+          if (result.data.code != 400) {
+            for (var i of result.data.data) {
+              i.selected = false;
+            }
+            this.list = result.data.data;
+          }
+        });
+    }
     // 需要公共的头部和尾部
     // this.$emit("show_footer", false);
   },
@@ -145,8 +149,8 @@ export default {
         list[index].count = count;
       }
       this.hh();
-    },
-   
+    }
+
     // selectAll(e) {
     //   //全选按钮状态
     //   var cb = e.target.checked;
@@ -172,6 +176,17 @@ export default {
 <style>
 .none {
   display: none;
+}
+.title{
+  text-align: center;
+  /* display: block; */
+  color:#303030;
+  height:30px;
+  font-weight: bold;
+  background:#ffffff;
+  line-height: 30px;
+  padding:3px 0 3px 0;
+  font-size: 22px;
 }
 .cart {
   /* display: flex; */
@@ -223,8 +238,8 @@ export default {
   color: #adadad;
   margin-top: 10px;
 }
-.state span{
-  margin-right:5px;
+.state span {
+  margin-right: 5px;
 }
 .sprice {
   display: block;
@@ -234,10 +249,10 @@ export default {
 }
 .btn {
   display: block;
-  width:130px;
+  width: 130px;
   position: relative;
-  right:0px;
-  top:60px;
+  right: 0px;
+  top: 60px;
 }
 .sbtn {
   display: inline-block;

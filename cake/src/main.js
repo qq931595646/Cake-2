@@ -24,7 +24,7 @@ Vue.prototype.axios = axios;
 // 配置axios发送请求时保存session信息
 axios.defaults.withCredentials = true
 // 配置axios基础路径
-axios.defaults.baseURL = "http://127.0.0.1:7700/"
+axios.defaults.baseURL = "http://127.0.0.1:7700"
 
 
 Vue.config.productionTip = false
